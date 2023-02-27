@@ -119,7 +119,10 @@ const Migrate = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout title="Migrate Email">
+      <Layout
+        title="Migrate Email"
+        description="Migrate your emails with ease using this tool. It copies emails from the source server to the destination server using the IMAP protocol."
+      >
         {successMessage && <Confetti />}
         <div className="space-y-6">
           <SourceAccountCard
