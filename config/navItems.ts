@@ -5,7 +5,7 @@ interface NavigationItem {
 }
 
 const navigation: NavigationItem[] = [
-  { name: 'Migrate Email', href: '/migrate', current: false }
+  { name: 'Migrate Email', href: '/', current: false }
 ]
 
 export default navigation
