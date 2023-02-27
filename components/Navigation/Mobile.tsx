@@ -1,22 +1,22 @@
-import { useRouter } from 'next/router';
-import type { ReactElement } from 'react';
-import { Disclosure } from '@headlessui/react';
-import navigation from '../../config/navItems';
+import { useRouter } from 'next/router'
+import type { ReactElement } from 'react'
+import { Disclosure } from '@headlessui/react'
+import navigation from '../../config/navItems'
 
 function classNames(...classes: any) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(' ')
 }
 
 export default function MobileNavigation(): ReactElement {
-  const router = useRouter();
+  const router = useRouter()
 
   navigation.forEach((item) => {
     if (router.pathname === item.href) {
-      item.current = true;
+      item.current = true
     } else {
-      item.current = false;
+      item.current = false
     }
-  });
+  })
 
   return (
     <>
@@ -37,5 +37,5 @@ export default function MobileNavigation(): ReactElement {
         </Disclosure.Button>
       ))}
     </>
-  );
+  )
 }

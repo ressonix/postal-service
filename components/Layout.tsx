@@ -1,17 +1,17 @@
-import type { ReactNode } from 'react';
-import { Disclosure } from '@headlessui/react';
+import type { ReactNode } from 'react'
+import { Disclosure } from '@headlessui/react'
 import {
   Bars3Icon,
   XMarkIcon,
   AtSymbolIcon,
-  CodeBracketIcon,
-} from '@heroicons/react/24/outline';
-import DesktopNavigation from './Navigation/Desktop';
-import MobileNavigation from './Navigation/Mobile';
+  CodeBracketIcon
+} from '@heroicons/react/24/outline'
+import DesktopNavigation from './Navigation/Desktop'
+import MobileNavigation from './Navigation/Mobile'
 
 export interface LayoutProps {
-  children?: ReactNode;
-  title?: string;
+  children?: ReactNode
+  title?: string
 }
 
 export default function Layout({ children, title }: LayoutProps) {
@@ -102,5 +102,5 @@ export default function Layout({ children, title }: LayoutProps) {
         </main>
       </div>
     </>
-  );
+  )
 }

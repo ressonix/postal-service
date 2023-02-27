@@ -1,58 +1,58 @@
-import { useEffect, useMemo, useState } from 'react';
-import axios from 'axios';
-import { ArrowLongDownIcon } from '@heroicons/react/20/solid';
-import Confetti from 'react-confetti';
-import Layout from '@/components/Layout';
+import { useEffect, useMemo, useState } from 'react'
+import axios from 'axios'
+import { ArrowLongDownIcon } from '@heroicons/react/20/solid'
+import Confetti from 'react-confetti'
+import Layout from '@/components/Layout'
 
-const ipAddressRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
-const domainRegex = /^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)*\.[a-zA-Z]{2,}$/;
+const ipAddressRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/
+const domainRegex = /^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)*\.[a-zA-Z]{2,}$/
 
 const Migrate = () => {
-  const [sourceServer, setSourceServer] = useState<string>('');
-  const [sourceServerError, setSourceServerError] = useState<any>(null);
-  const [sourcePort, setSourcePort] = useState<number>(993);
-  const [sourceUsername, setSourceUsername] = useState<string>('');
-  const [sourcePassword, setSourcePassword] = useState<string>('');
-  const [sourceSecure, setSourceSecure] = useState<boolean>(true);
+  const [sourceServer, setSourceServer] = useState<string>('')
+  const [sourceServerError, setSourceServerError] = useState<any>(null)
+  const [sourcePort, setSourcePort] = useState<number>(993)
+  const [sourceUsername, setSourceUsername] = useState<string>('')
+  const [sourcePassword, setSourcePassword] = useState<string>('')
+  const [sourceSecure, setSourceSecure] = useState<boolean>(true)
 
   function handleSourceServerChange(event: any) {
-    const value = event.target.value;
+    const value = event.target.value
     if (ipAddressRegex.test(value) || domainRegex.test(value)) {
-      setSourceServer(value);
-      setSourceServerError(null);
+      setSourceServer(value)
+      setSourceServerError(null)
     } else {
-      setSourceServer(value);
+      setSourceServer(value)
       setSourceServerError(
         'Invalid input. Please enter a valid IP address or domain name.'
-      );
+      )
     }
   }
 
-  const [destinationServer, setDestinationServer] = useState<string>('');
+  const [destinationServer, setDestinationServer] = useState<string>('')
   const [destinationServerError, setDestinationServerError] =
-    useState<any>(null);
-  const [destinationPort, setDestinationPort] = useState<number>(993);
-  const [destinationUsername, setDestinationUsername] = useState<string>('');
-  const [destinationPassword, setDestinationPassword] = useState<string>('');
-  const [destinationSecure, setDestinationSecure] = useState<boolean>(true);
+    useState<any>(null)
+  const [destinationPort, setDestinationPort] = useState<number>(993)
+  const [destinationUsername, setDestinationUsername] = useState<string>('')
+  const [destinationPassword, setDestinationPassword] = useState<string>('')
+  const [destinationSecure, setDestinationSecure] = useState<boolean>(true)
 
   function handleDestinationServerChange(event: any) {
-    const value = event.target.value;
+    const value = event.target.value
     if (ipAddressRegex.test(value) || domainRegex.test(value)) {
-      setDestinationServer(value);
-      setDestinationServerError(null);
+      setDestinationServer(value)
+      setDestinationServerError(null)
     } else {
-      setDestinationServer(value);
+      setDestinationServer(value)
       setDestinationServerError(
         'Invalid input. Please enter a valid IP address or domain name.'
-      );
+      )
     }
   }
 
-  const [successMessage, setSuccessMessage] = useState<string>('');
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('')
+  const [errorMessage, setErrorMessage] = useState<string>('')
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false)
 
   const loadingList: any = useMemo(
     () => [
@@ -62,39 +62,39 @@ const Migrate = () => {
       'Just a little while longer...',
       'Almost there...',
       'Moving lots of messages...',
-      'Hang tight...',
+      'Hang tight...'
     ],
     []
-  );
+  )
 
-  const [loadingIndex, setLoadingIndex] = useState(0);
+  const [loadingIndex, setLoadingIndex] = useState(0)
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
+    let intervalId: NodeJS.Timeout
 
     if (loading) {
       intervalId = setInterval(() => {
         setLoadingIndex(
           (loadingIndex) => (loadingIndex + 1) % loadingList.length
-        );
-      }, 20000);
+        )
+      }, 20000)
     }
 
     return () => {
-      clearInterval(intervalId);
-    };
-  }, [loading, loadingList]);
+      clearInterval(intervalId)
+    }
+  }, [loading, loadingList])
 
   const portOptions = [
     { label: '143', value: 143 },
-    { label: '993', value: 993 },
-  ];
+    { label: '993', value: 993 }
+  ]
 
   const handleMigrate = async () => {
-    let response: any | null = null;
+    let response: any | null = null
 
     try {
-      setLoading(true);
+      setLoading(true)
       response = await axios.post<{ message: string }>('/api/migrate', {
         sourceServer,
         sourcePort,
@@ -105,36 +105,36 @@ const Migrate = () => {
         destinationPort,
         destinationUsername,
         destinationPassword,
-        destinationSecure,
-      });
+        destinationSecure
+      })
 
-      setSuccessMessage(response.data.message);
-      setTimeout(() => setSuccessMessage(''), 10000);
+      setSuccessMessage(response.data.message)
+      setTimeout(() => setSuccessMessage(''), 10000)
 
-      setSourceServer('');
-      setSourcePort(993);
-      setSourceUsername('');
-      setSourcePassword('');
-      setSourceSecure(true);
+      setSourceServer('')
+      setSourcePort(993)
+      setSourceUsername('')
+      setSourcePassword('')
+      setSourceSecure(true)
 
-      setDestinationServer('');
-      setDestinationPort(993);
-      setDestinationUsername('');
-      setDestinationPassword('');
-      setDestinationSecure(true);
+      setDestinationServer('')
+      setDestinationPort(993)
+      setDestinationUsername('')
+      setDestinationPassword('')
+      setDestinationSecure(true)
     } catch (error: any) {
       setErrorMessage(
         'An error occurred. Please double check the information provided and try again.'
-      );
-      setTimeout(() => setErrorMessage(''), 10000);
+      )
+      setTimeout(() => setErrorMessage(''), 10000)
     } finally {
-      setLoading(false);
-      setLoadingIndex(0);
+      setLoading(false)
+      setLoadingIndex(0)
     }
-  };
+  }
 
   function classNames(...classes: Array<string>) {
-    return classes.filter(Boolean).join(' ');
+    return classes.filter(Boolean).join(' ')
   }
 
   return (
@@ -456,7 +456,7 @@ const Migrate = () => {
         </div>
       </div>
     </Layout>
-  );
-};
+  )
+}
 
-export default Migrate;
+export default Migrate
