@@ -68,6 +68,7 @@ export default function Layout({ children, title, description }: LayoutProps) {
                           href="https://github.com/ressonix/postal-service"
                           type="button"
                           className="ml-2 flex-shrink-0 rounded-full bg-blue-600 p-1 text-blue-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600"
+                          target="_blank"
                         >
                           <span className="sr-only">View source code</span>
                           <CodeBracketIcon
