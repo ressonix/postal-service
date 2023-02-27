@@ -1,20 +1,21 @@
 import type { ReactNode } from 'react'
 import { Disclosure } from '@headlessui/react'
 import {
-  Bars3Icon,
-  XMarkIcon,
   AtSymbolIcon,
-  CodeBracketIcon
+  Bars3Icon,
+  CodeBracketIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline'
 import DesktopNavigation from './Navigation/Desktop'
 import MobileNavigation from './Navigation/Mobile'
 
 export interface LayoutProps {
-  children?: ReactNode
-  title?: string
+  children: ReactNode
+  title: string
+  description?: string
 }
 
-export default function Layout({ children, title }: LayoutProps) {
+export default function Layout({ children, title, description }: LayoutProps) {
   return (
     <>
       <div className="min-h-full">
@@ -89,6 +90,11 @@ export default function Layout({ children, title }: LayoutProps) {
               <h1 className="text-3xl font-bold tracking-tight text-white">
                 {title}
               </h1>
+              {description ? (
+                <p className="mt-2 text-base text-blue-300">{description}</p>
+              ) : (
+                ''
+              )}
             </div>
           </header>
         </div>
