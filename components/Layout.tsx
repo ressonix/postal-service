@@ -8,6 +8,7 @@ import {
 } from '@heroicons/react/24/outline'
 import DesktopNavigation from './Navigation/Desktop'
 import MobileNavigation from './Navigation/Mobile'
+import package_json from 'package.json'
 
 export interface LayoutProps {
   children: ReactNode
@@ -61,9 +62,10 @@ export default function Layout({ children, title, description }: LayoutProps) {
                     <div className="hidden lg:ml-4 lg:block">
                       <div className="flex items-center">
                         <h1 className="text-sm text-blue-300">
-                          Version: 1.0.0
+                          Version: {package_json.version}
                         </h1>
-                        <button
+                        <a
+                          href="https://github.com/ressonix/postal-service"
                           type="button"
                           className="ml-2 flex-shrink-0 rounded-full bg-blue-600 p-1 text-blue-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600"
                         >
@@ -72,7 +74,7 @@ export default function Layout({ children, title, description }: LayoutProps) {
                             className="h-5 w-5"
                             aria-hidden="true"
                           />
-                        </button>
+                        </a>
                       </div>
                     </div>
                   </div>
