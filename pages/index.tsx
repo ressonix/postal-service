@@ -16,6 +16,7 @@ const Migrate = () => {
   const [sourceUsername, setSourceUsername] = useState<string>('')
   const [sourcePassword, setSourcePassword] = useState<string>('')
   const [sourceSecure, setSourceSecure] = useState<boolean>(true)
+  const [sourceFolder, setSourceFolder] = useState<string>('INBOX')
 
   const [destinationServer, setDestinationServer] = useState<string>('')
   const [destinationServerError, setDestinationServerError] =
@@ -24,6 +25,7 @@ const Migrate = () => {
   const [destinationUsername, setDestinationUsername] = useState<string>('')
   const [destinationPassword, setDestinationPassword] = useState<string>('')
   const [destinationSecure, setDestinationSecure] = useState<boolean>(true)
+  const [destinationFolder, setDestinationFolder] = useState<string>('INBOX')
 
   const [successMessage, setSuccessMessage] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string>('')
@@ -72,11 +74,13 @@ const Migrate = () => {
         sourceUsername,
         sourcePassword,
         sourceSecure,
+        sourceFolder,
         destinationServer,
         destinationPort,
         destinationUsername,
         destinationPassword,
-        destinationSecure
+        destinationSecure,
+        destinationFolder
       })
 
       setSuccessMessage(response.data.message)
@@ -87,12 +91,14 @@ const Migrate = () => {
       setSourceUsername('')
       setSourcePassword('')
       setSourceSecure(true)
+      setSourceFolder('INBOX')
 
       setDestinationServer('')
       setDestinationPort(993)
       setDestinationUsername('')
       setDestinationPassword('')
       setDestinationSecure(true)
+      setDestinationFolder('INBOX')
     } catch (error: any) {
       setErrorMessage(
         'An error occurred. Please double check the information provided and try again.'
@@ -138,6 +144,8 @@ const Migrate = () => {
             setSourcePassword={setSourcePassword}
             sourceSecure={sourceSecure}
             setSourceSecure={setSourceSecure}
+            sourceFolder={sourceFolder}
+            setSourceFolder={setSourceFolder}
           />
 
           <div className="my-5">
@@ -157,6 +165,8 @@ const Migrate = () => {
             setDestinationPassword={setDestinationPassword}
             destinationSecure={destinationSecure}
             setDestinationSecure={setDestinationSecure}
+            destinationFolder={destinationFolder}
+            setDestinationFolder={setDestinationFolder}
           />
 
           <div className="flex items-center justify-end">

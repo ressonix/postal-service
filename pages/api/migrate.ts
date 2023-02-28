@@ -4,6 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 async function migrateMessages(
   sourceClient: ImapFlow,
   destinationClient: ImapFlow,
+  destinationFolder: string,
   batchSize: number
 ): Promise<void> {
   const results = await sourceClient.search({ all: true })
@@ -18,7 +19,7 @@ async function migrateMessages(
 
     for await (const message of batchResults) {
       let buffer = Buffer.from(message.source)
-      await destinationClient.append('INBOX', buffer)
+      await destinationClient.append(destinationFolder, buffer)
     }
 
     messagesProcessed += batchSize
@@ -35,11 +36,13 @@ export default async function handler(
     sourceUsername,
     sourcePassword,
     sourceSecure,
+    sourceFolder,
     destinationServer,
     destinationPort,
     destinationUsername,
     destinationPassword,
-    destinationSecure
+    destinationSecure,
+    destinationFolder
   } = req.body
 
   let sourceClient: ImapFlow | null = null
@@ -66,14 +69,23 @@ export default async function handler(
       }
     })
 
+    const checkAndCreateMailbox = async (destinationClient: ImapFlow) => {
+      try {
+        await destinationClient.getMailboxLock(destinationFolder)
+      } catch {
+        await destinationClient.mailboxCreate(destinationFolder)
+        await destinationClient.getMailboxLock(destinationFolder)
+      }
+    }
+
     await sourceClient.connect()
-    await sourceClient.getMailboxLock('INBOX')
+    await sourceClient.getMailboxLock(sourceFolder)
 
     await destinationClient.connect()
-    await destinationClient.getMailboxLock('INBOX')
+    await checkAndCreateMailbox(destinationClient)
 
     const batchSize = 25
-    await migrateMessages(sourceClient, destinationClient, batchSize)
+    await migrateMessages(sourceClient, destinationClient, destinationFolder, batchSize)
 
     res.status(200).json({ message: 'Emails migrated successfully.' })
   } catch (error: any) {
@@ -81,10 +93,10 @@ export default async function handler(
     res.status(500).json({ message: `An error occurred: ${error.message}` })
   } finally {
     if (sourceClient) {
-      sourceClient.logout()
+      await sourceClient.logout()
     }
     if (destinationClient) {
-      destinationClient.logout()
+      await destinationClient.logout()
     }
   }
 }
