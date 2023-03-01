@@ -78,6 +78,10 @@ export default async function handler(
       }
     }
 
+    // TODO: Figure out why this is throwing a type error
+    // let list = await sourceClient.list()
+    // list.forEach(mailbox=>console.log(mailbox.path));
+
     await sourceClient.connect()
     await sourceClient.getMailboxLock(sourceFolder)
 
