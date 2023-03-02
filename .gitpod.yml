@@ -1,0 +1,17 @@
+image: gitpod/workspace-node
+
+ports:
+  - port: 3000
+    onOpen: open-preview
+
+tasks:
+  - command: |
+      npm install
+      npm run dev
+
+jetbrains:
+  webstorm:
+    plugins:
+      - intellij.prettierJS
+      - com.intellij.tailwindcss
+      - org.intellij.plugins.postcss
