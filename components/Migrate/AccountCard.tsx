@@ -25,8 +25,6 @@ interface SourceProps {
   setSourcePassword: Dispatch<SetStateAction<string>>
   sourceSecure: boolean
   setSourceSecure: Dispatch<SetStateAction<boolean>>
-  sourceFolder: string
-  setSourceFolder: Dispatch<SetStateAction<string>>
 }
 
 interface DestinationProps {
@@ -42,8 +40,6 @@ interface DestinationProps {
   setDestinationPassword: Dispatch<SetStateAction<string>>
   destinationSecure: boolean
   setDestinationSecure: Dispatch<SetStateAction<boolean>>
-  destinationFolder: string
-  setDestinationFolder: Dispatch<SetStateAction<string>>
 }
 
 export function SourceAccountCard(props: SourceProps): ReactElement {
@@ -159,23 +155,6 @@ export function SourceAccountCard(props: SourceProps): ReactElement {
                 type="password"
                 name="source-password"
                 id="source-password"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-              />
-            </div>
-
-            <div className="col-span-6 sm:col-span-6">
-              <label
-                htmlFor="source-hostname"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Folder
-              </label>
-              <input
-                value={props.sourceFolder}
-                onChange={(event) => props.setSourceFolder(event.target.value)}
-                type="text"
-                name="source-hostname"
-                id="source-hostname"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               />
             </div>
@@ -326,23 +305,6 @@ export function DestinationAccountCard(props: DestinationProps): ReactElement {
                 type="password"
                 name="destination-password"
                 id="destination-password"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-              />
-            </div>
-
-            <div className="col-span-6 sm:col-span-6">
-              <label
-                htmlFor="source-hostname"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Folder
-              </label>
-              <input
-                value={props.destinationFolder}
-                onChange={(event) => props.setDestinationFolder(event.target.value)}
-                type="text"
-                name="source-hostname"
-                id="source-hostname"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               />
             </div>

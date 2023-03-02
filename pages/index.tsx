@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import axios from 'axios'
-import { ArrowLongDownIcon } from '@heroicons/react/20/solid'
+import {
+  ArrowLongDownIcon,
+  InformationCircleIcon,
+  XMarkIcon
+} from '@heroicons/react/20/solid'
 import Confetti from 'react-confetti'
 import Layout from '@/components/Layout'
 import Head from 'next/head'
@@ -10,13 +14,14 @@ import {
 } from '@/components/Migrate/AccountCard'
 
 const Migrate = () => {
+  const [show, setShow] = useState(true)
+
   const [sourceServer, setSourceServer] = useState<string>('')
   const [sourceServerError, setSourceServerError] = useState<any>(null)
   const [sourcePort, setSourcePort] = useState<number>(993)
   const [sourceUsername, setSourceUsername] = useState<string>('')
   const [sourcePassword, setSourcePassword] = useState<string>('')
   const [sourceSecure, setSourceSecure] = useState<boolean>(true)
-  const [sourceFolder, setSourceFolder] = useState<string>('INBOX')
 
   const [destinationServer, setDestinationServer] = useState<string>('')
   const [destinationServerError, setDestinationServerError] =
@@ -25,7 +30,6 @@ const Migrate = () => {
   const [destinationUsername, setDestinationUsername] = useState<string>('')
   const [destinationPassword, setDestinationPassword] = useState<string>('')
   const [destinationSecure, setDestinationSecure] = useState<boolean>(true)
-  const [destinationFolder, setDestinationFolder] = useState<string>('INBOX')
 
   const [successMessage, setSuccessMessage] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string>('')
@@ -74,13 +78,11 @@ const Migrate = () => {
         sourceUsername,
         sourcePassword,
         sourceSecure,
-        sourceFolder,
         destinationServer,
         destinationPort,
         destinationUsername,
         destinationPassword,
-        destinationSecure,
-        destinationFolder
+        destinationSecure
       })
 
       setSuccessMessage(response.data.message)
@@ -91,14 +93,12 @@ const Migrate = () => {
       setSourceUsername('')
       setSourcePassword('')
       setSourceSecure(true)
-      setSourceFolder('INBOX')
 
       setDestinationServer('')
       setDestinationPort(993)
       setDestinationUsername('')
       setDestinationPassword('')
       setDestinationSecure(true)
-      setDestinationFolder('INBOX')
     } catch (error: any) {
       setErrorMessage(
         'An error occurred. Please double check the information provided and try again.'
@@ -130,6 +130,41 @@ const Migrate = () => {
         description="Migrate your emails with ease using this tool. It copies emails from the source server to the destination server using the IMAP protocol."
       >
         {successMessage && <Confetti />}
+        {show && (
+          <div className="mb-4 rounded-md bg-blue-50 p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <InformationCircleIcon
+                  className="h-5 w-5 text-blue-400"
+                  aria-hidden="true"
+                />
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-blue-700">
+                  This tool moves <strong>all messages and folders</strong> from
+                  the source server to the destination server. If you don&apos;t
+                  wish to move every message, please delete from the source
+                  server prior to using this tool. Due to rate limiting with
+                  certain email providers, it may take a while for your
+                  migration to complete depending on the number of emails in the
+                  source server. Please be patient.
+                </p>
+              </div>
+              <div className="ml-auto pl-3">
+                <div className="-mx-1.5 -my-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setShow(!show)}
+                    className="inline-flex rounded-md bg-blue-50 p-1.5 text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
+                  >
+                    <span className="sr-only">Dismiss</span>
+                    <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="space-y-6">
           <SourceAccountCard
             sourceServer={sourceServer}
@@ -144,8 +179,6 @@ const Migrate = () => {
             setSourcePassword={setSourcePassword}
             sourceSecure={sourceSecure}
             setSourceSecure={setSourceSecure}
-            sourceFolder={sourceFolder}
-            setSourceFolder={setSourceFolder}
           />
 
           <div className="my-5">
@@ -165,8 +198,6 @@ const Migrate = () => {
             setDestinationPassword={setDestinationPassword}
             destinationSecure={destinationSecure}
             setDestinationSecure={setDestinationSecure}
-            destinationFolder={destinationFolder}
-            setDestinationFolder={setDestinationFolder}
           />
 
           <div className="flex items-center justify-end">

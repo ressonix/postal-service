@@ -8,21 +8,18 @@ async function migrateMessages(
   batchSize: number
 ): Promise<void> {
   const results = await sourceClient.search({ all: true })
-  let messagesCount = results.length
-  let messagesProcessed = 0
-
-  while (messagesProcessed < messagesCount) {
-    const batchResults = sourceClient.fetch(
-      results.slice(messagesProcessed, messagesProcessed + batchSize),
+  for (let i = 0; i < results.length; i += batchSize) {
+    const batchResults = await sourceClient.fetch(
+      results.slice(i, i + batchSize),
       { source: true, flags: true }
-    )
+    );
 
     for await (const message of batchResults) {
-      let buffer = Buffer.from(message.source)
-      await destinationClient.append(destinationFolder, buffer)
+      const { source } = message;
+      const buffer = Buffer.from(source);
+      await destinationClient.append(destinationFolder, buffer);
+      await new Promise(resolve => setTimeout(resolve, 2000));
     }
-
-    messagesProcessed += batchSize
   }
 }
 
@@ -36,13 +33,11 @@ export default async function handler(
     sourceUsername,
     sourcePassword,
     sourceSecure,
-    sourceFolder,
     destinationServer,
     destinationPort,
     destinationUsername,
     destinationPassword,
     destinationSecure,
-    destinationFolder
   } = req.body
 
   let sourceClient: ImapFlow | null = null
@@ -69,27 +64,43 @@ export default async function handler(
       }
     })
 
-    const checkAndCreateMailbox = async (destinationClient: ImapFlow) => {
-      try {
-        await destinationClient.getMailboxLock(destinationFolder)
-      } catch {
-        await destinationClient.mailboxCreate(destinationFolder)
-        await destinationClient.getMailboxLock(destinationFolder)
-      }
-    }
+    const batchSize = 25
 
-    // TODO: Figure out why this is throwing a type error
-    // let list = await sourceClient.list()
-    // list.forEach(mailbox=>console.log(mailbox.path));
+    const checkAndCreateMailbox = async (destinationClient: ImapFlow, sourceClient: ImapFlow) => {
+      let list = await sourceClient.list();
+      for (const mailbox of list) {
+        try {
+          await destinationClient.mailboxOpen(mailbox.path);
+        } catch {
+          await destinationClient.mailboxCreate(mailbox.path);
+        } finally {
+          await destinationClient.mailboxClose();
+        }
+      }
+    };
+
+
+    const checkAndMoveMail = async (destinationClient: ImapFlow, sourceClient: ImapFlow, batchSize: number) => {
+      let list = await sourceClient.list();
+      await Promise.all(
+        list.map(async (mailbox) => {
+          try {
+            let sourceLock = await sourceClient.getMailboxLock(mailbox.path);
+            let destinationLock = await destinationClient.getMailboxLock(mailbox.path);
+            await migrateMessages(sourceClient, destinationClient, mailbox.path, batchSize);
+            await sourceLock.release();
+            await destinationLock.release();
+          } catch (err) {
+            console.error(`Error migrating messages for ${mailbox.path}: ${err}`);
+          }
+        })
+      );
+    };
 
     await sourceClient.connect()
-    await sourceClient.getMailboxLock(sourceFolder)
-
     await destinationClient.connect()
-    await checkAndCreateMailbox(destinationClient)
-
-    const batchSize = 25
-    await migrateMessages(sourceClient, destinationClient, destinationFolder, batchSize)
+    await checkAndCreateMailbox(destinationClient, sourceClient)
+    await checkAndMoveMail(destinationClient, sourceClient, batchSize)
 
     res.status(200).json({ message: 'Emails migrated successfully.' })
   } catch (error: any) {
